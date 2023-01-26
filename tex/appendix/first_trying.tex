@@ -1,0 +1,107 @@
+
+Let $X_t\in\R^n$ be  a vector of logarithms of macroeconomics variables which are  hypothesed to move together with overall economic conditions. Also, $X_t$ consists of two stochastic components:
+\begin{enumerate}
+	\item The common unobserved scalar variable, $C_t$, which is the `ìndex''.
+	\item An idiosyncratic component, $u_t\in\R^n$ which is assumed to represent also the potential measurement error.
+\end{enumerate}
+Both components are assumed to having linear stochastic structures. The coincident variables used in the analysis are integrated but not cointegrated. Hence, the model is specified in terms of $\Delta X_t$ and $\Delta C_t$. Now we can write the model:
+\begin{equation}\label{eq:model1}
+	\begin{aligned}
+		\Delta X_t &= \beta + \gamma(L) \Delta C_t + u_t \\
+		D(L) u_t &= \varepsilon_t \\
+		\phi(L) \Delta C_t &= \delta + \eta_t
+	\end{aligned}
+\end{equation}
+Here $L$ denotes the lag operator, and $\phi(L)$, $\gamma(L)$, and $D(L)$ are, respectively, scalar, vector, and matrix lag polynomials.
+
+\assumption The co-movements of the multiple time series arise from the source $\Delta C_t$.
+
+This assumptions holds by assuming that $\left(u_t^1,\ldots, u_t^n, \Delta C_t\right)$ are (mutually) uncorrelated at all leads and lagas, which is achieved by making $D(L)$ diagonal and the $n+1$ disturbances $\left(\varepsilon_t^1,\ldots, \varepsilon_t^n, \Delta C_t\right)$ mutually and serially uncorrelated.
+
+\assumption $\gamma(L) = \gamma_0$. This is done in order to restrict the impulse response from $\eta_t$ to $\Delta X_t$ to be proportional across the observable variables. This is done in the case where there are \emph{more than three} observable series or when the variables are serially correlated. See page 344 in \citeA{stock&watson1989indexes}.
+
+Let's assume also, without loss of generality, that $\phi_0 = D_0 = 1$. Hence, we can rewrite (\ref{eq:model1}) as
+
+\begin{equation}\label{eq:model2}
+	\begin{aligned}
+		\Delta X_t &= \beta + \gamma \Delta C_t + u_t \\
+		\Delta C_t &= \delta + \sum_{i=1}^p D_i \Delta C_{t-i} + \eta_t\\
+		u_t & = \sum_{i=1}^q \phi_i u_{t-i} + \varepsilon_t
+	\end{aligned}
+\end{equation} 
+Let me now consider the notation $v^{1,k}$ for a vector whose numbers are already known and therefore it represents $(v_1,\ldots, v_k)$. Hence, we can rewrite (\ref{eq:model2}) as
+\begin{equation}\label{eq:model3}
+	\begin{aligned}
+		\Delta X_t &= \beta + \gamma \Delta C_t + u_t \\
+		\Delta C_t &= \delta + \phi^{1,p}\cdot  \Delta C_{t}^{1,p}+ \eta_t\\
+		u_t & = D^{1,q}\cdot u_t^{1,q}+ \varepsilon_t,
+	\end{aligned}
+\end{equation}
+chere the dot stands for the scalar product. Hence, we can write the second and third equations in (\ref{eq:model3}) as a matrix equation for the \emph{transition equation} of the Kalman filter that we want to construct.
+\begin{equation}
+	\begin{bmatrix}
+		C_{t}^\ast  \\ u^\ast_t
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		\delta \\ 0
+	\end{bmatrix}
+	+
+	\begin{bmatrix}
+		\phi^\ast & 0 \\
+		0 &D^\ast  
+	\end{bmatrix}
+	\begin{bmatrix}
+		C_{t-1}^\ast \\ u_{t-1}^\ast\\
+	\end{bmatrix}
+	+
+	\begin{bmatrix}
+		Z_c' & 0 \\ 0 & Z_u'
+	\end{bmatrix}
+	\begin{bmatrix}
+		\eta_t \\ \varepsilon_t
+	\end{bmatrix}
+\end{equation}
+where $Z_c = e_1\in\R^p$ (i.e., one in the first entry and zeros in the rest $p-1$); $Z_u = e_1\in\R^q$ (i.e., one in the first entry and zeros in the rest). Regarding the first equation, which is suppose to be the measurement equation, we can write it as
+\begin{equation}
+	\Delta X_t 
+	=
+	\beta + 
+	\begin{bmatrix}
+		\gamma Z_c & Z_u 
+	\end{bmatrix}
+	\begin{bmatrix}
+		C_{t}^\ast \\ u_{t}^\ast
+	\end{bmatrix}
+\end{equation}
+
+To sum up, we can write everything as 
+\begin{equation}
+	\begin{aligned}
+		y_t &= d + Z\alpha_t \\
+		\alpha &= c + T\alpha_{t-1} + R\eta_t,
+	\end{aligned}
+\end{equation}
+with $d=\beta$, $c=(\delta, 0)$, and
+\begin{equation}
+	Z = \begin{bmatrix}
+		\gamma Z_c & Z_u 
+	\end{bmatrix}, \quad\quad T = \begin{bmatrix}
+		\phi^\ast & 0 \\
+		0 &D^\ast  
+	\end{bmatrix}, \quad\quad R = \begin{bmatrix}
+		Z_c' & 0 \\ 0 & Z_u'
+	\end{bmatrix}
+\end{equation}
+
+The system is estimated by maximum likelihood using the Kalman filter. The proposed CEI si computed as the minimum mean square error linear estimate of this single common factor, $C_{t|t}$, produced by applying the Kalman filter to the estimated system, i.e., it is a linear combination of current and past logarithms of the coincidents variables.
+
+\subsection{Data}
+
+The proposed CEI is based on four series:
+\begin{enumerate}
+	\item Industrial Production. I am using the index.
+	\item Real Personal Income less transfer payments.
+	\item Real manufacturing and trade sales.
+	\item Employee-hours in nonagricultural establishments.
+\end{enumerate}

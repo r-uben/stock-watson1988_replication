@@ -1,0 +1,101 @@
+The transition equation for the state is  given by
+\begin{equation}
+	\begin{bmatrix}
+		C_t^\ast \\ u_t^\ast \\ C_{t-1}
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		\Phi^\ast & 0 & 0 \\ 0 & D^\ast & 0 \\ Z_c & 0 & 1
+	\end{bmatrix}
+	\begin{bmatrix}
+		C_{t-1}^\ast \\ u_{t-1}^\ast \\ C_{t-1}
+	\end{bmatrix}
+	+ 
+	\begin{bmatrix}
+		Z_c & 0 \\ 0 & Z_u \\ 0 & 0
+	\end{bmatrix}
+	\begin{bmatrix}
+		\eta_t \\ \varepsilon_t
+	\end{bmatrix}
+\end{equation}
+where 
+\begin{equation}
+	\begin{aligned}
+		C_{t}^\ast &= 
+		\begin{bmatrix}
+			\Delta C_t &	\Delta C_{t-1} &\cdots \Delta C_{t-p+1}
+		\end{bmatrix}'
+		\\
+		u_t^\ast &= 
+		\begin{bmatrix}
+			u_t' & u_{t-1}' & \cdots & u_{t-k+1}'
+		\end{bmatrix}'
+		\\
+		\Phi^\ast &=
+		\begin{bmatrix}
+			\begin{matrix}
+				\phi_1 & \cdots  &\phi_{p-1} &
+			\end{matrix} & \phi_p\\
+			I_{p-1} & 0 
+		\end{bmatrix}
+		\\
+		D^\ast &=
+		\begin{bmatrix}
+			\begin{matrix}
+				D_1  & \cdots & D_{k-1} 
+			\end{matrix}& D_k\\
+			I_{n(k-1)} & 0 
+		\end{bmatrix}
+	\end{aligned}
+\end{equation}
+and
+\begin{equation}
+	\begin{aligned}
+		Z_c & = \begin{bmatrix}
+			1 & 0_{1\times(p-1)}
+		\end{bmatrix}\\
+		Z_u & = \begin{bmatrix}
+			I_n & 0_{n\times n (k-1)}
+		\end{bmatrix}
+	\end{aligned}
+\end{equation}
+and where $I_n$ denotes the $n\times n$ identity matrix, $0_{n\times k}$ denotes a $n\times k$ matrix of zeros, and $D_i = \text{diag}(d_{1,i}, \ldots, d_{n,i}$), where $d_j(L) = 1- \sum_{i=1}^k d_{j,i} L^i$.
+
+The measurement equation is:
+\begin{equation}
+	Y_t = \beta \ones + \begin{bmatrix}
+		\gamma Z_c & Z_u & 0 
+	\end{bmatrix}
+	\begin{bmatrix}
+		C_t^\ast\\u_t^\ast \\ C_{t-1}
+	\end{bmatrix},
+\end{equation}
+where $\ones$ is a vector of ones in $\R^n$, with $n$ being the number of time series variables used to estimate the index; and $\gamma\in \R^n$ containes each specific loading with respect to $C_t\ast$. Note then that $\gamma Z_c\in \R^{n\times (p-1)}$. The system can be rewritten more compactly in the standard form
+\begin{align}
+	\alpha_t & = T \alpha_{t-1} + R\zeta_t \label{eq:alpha}\\
+	Y_t & = \beta \ones + Z\alpha_t + \xi_t\label{eq:Y}
+\end{align}
+where
+\begin{equation}
+	\begin{aligned}
+		\alpha_t &= \begin{bmatrix}
+			(C_t^\ast)' & (u_t^\ast)' & C_{t-1}'\\
+		\end{bmatrix}'\\
+		\zeta_t & = \begin{bmatrix}
+			\eta_t & \varepsilon_t'
+		\end{bmatrix}'
+	\end{aligned}
+\end{equation}
+and where $T_t$, $R$ and $Z$ respectively denote the transition matrix, the selection matrix, and the selection matrix. The covariance matrix of $\zeta_t$ is $\E\zeta_t\zeta_t'=\Sigma$. We also assume that $\sigma^2(\eta_t) = 1$ and that $\Sigma$ is diagonal. The Kalman filter prediction equations are: 
+\begin{align}
+	\_{t|t-1} &= T_t \alpha_{t-1|t-1}\\
+	P_{t|t-1} &= T_t P_{t-1|t-1}T_t' + R\Sigma R'
+\end{align}
+The forecast of $Y_t$ at time $t-1$ is $$Y_{t|t-1} = \beta\ones + Z\alpha_{t|t-1},$$ and the forecast error is $$\nu_t=Y_t-\beta\ones - Z\alpha_{t|t-1}.$$ The updating equations of the filter are:
+\begin{align}
+	\alpha_{t|t} &= \alpha_{t|t-1} + P_{t|t-1} Z'F_t^{-1}\nu_t\\
+	P_{t|t}& = P_{t|t-1} - P_{t|t-1}Z'F_t^{-1} Z P_{t|t-1}
+\end{align}
+where $F_t = \E[\nu_t\nu_t'] = Z P_{t|t-1}Z' + H$. In this specification, and following \citeA{stock&watson1989indexes}, we take $T_t$ to be constant and $H=0$.
+
+

@@ -1,0 +1,178 @@
+\subsection*{Abstract}
+
+The Index of Coincident Economic Indicators, currently compiled by the US Department of Commerce, is designed to measure the state of overall economic activity. The index is constructed as a weighted average of four key macroeconomic time series, where the weights are obtained using rules that date to the early days of business cycle analysis. This paper presents an explicit time series model (formally, a dynamic factor analysis or ``single-index'' model) that implicitly defines a variable that can be thought of as the overall state of the economy. Upon estimating this model using data from 1959-1987, the estimate of this unobserved variable is found to be highly correlated with the official Commerce Department series, particularly over business cycle horizons. Thus this model provides a formal rationalisation for the traditional methodology used to develop the Coincident Index. Initial exploratory exercises indicate that traditional leading variables can prove useful in forecasting the short-run growth in this series.
+
+\subsection{Introduction}
+
+Since their initial development in 1938 by Wesley Mitchell, Arthur Burns, and their colleagues at the National Bureau of Economic Research, the Composite Indexes of Coincident and Leading Economic Indicators have played an important role in summarising the state of macroeconomic activity. This paper reconsiders the problem of constructing an index of coincident indicators. We will use the techniques of modern time series analysis to cevelop an explicit probability model of the four coincident variables that comprise the Index of Coincident Economic Indicators (CEI) currently compiled by the Deparment of Commerce (DOC). This probability model provides a framework for computing an alternative coincident index. As it turns out, this alternative index is quantitatively similar  to the DOX index. Thus this probability model provides a formal statistical rationalisation for, and interpretation of, the construction of the DOC CEI. This alternative interpretation complements that provided by the methodology developed by Mitchel and Burns (1938) and aplied by, for example ,Zarnowitz and Boachan (1975).
+
+The model adopted in this paper is based on the  notion that the comovements in many macroeconomic variables have a common element that can be captured by a single underlying, unobserved variable. Tin the abstract, this variable represents the general ``state of the economy''. The problem is to estimate the current state of the economy, i.e., this common element in the fluctuations of key aggregate time series variables. This unobserved variable — the ``state of the economy'' — must be defined before any attempt can be made to estimate it. In technical terms, this requires formualting a probability model that provides a mathematical definition of the unobserved state of the economy. In nontechnical terms, this problem can be phrased as a question: What do the leading indicators lead?
+
+Our proposed answer to this question is given in Section 2. This section presents a parametric ``single-index'' model in whic the state of the economy — referred to as $C_t$ — is an unobserved variable common to multiple aggregate time series. Because this model is linear in the unobserved variables, the Kalman Filter can be used to construct the Gaussian likelihood function and thereby to esitmate the unknown parameters of the model by maximum likelihood. As a side benefit, the Kalman Filter automatically computes the minimum mean square error esitmate of $C_t$ using data through period $t$. This estimate, $C_{t|t}$, is teh alternaitve index of coincident indicators computed using the single-index model.
+
+The singleindex model is estimated using data on industrial production, real personal income, real manufacturing and trade sales, and employment in nonagricultural establishments from 1959 to 1987. The results are reported in Section 3. Also in this section, the estimated alternative index $C_{t|t}$ is compared with the DOC series. The similarity between the two is triking, particularly over business-cycle horizons.
+
+Section 4 presents an initial inevstigation into forecasting the growth of $C_{t|t}$ using a variety of leading or predictive macroeconomic variables. The main conclusion is that a parsimoniously parametrised time series model with $C_{t|t}$ and six leading variables can forecast approximately two-thirds of the variance of the growth in $C_{t|t}$ iver the next six months.
+
+A conceptually distinct forecasting problem is explored in section 5. A traditional focus of business cycle analysis has of course been identifying expansion and contractions. Several recent forecasting exercises have focused on forecasting turning points; see, for example, Hymans (1973), Wecker (1979), Zarnowitz and Moore (1982), Kling (1987), and Zellner, Hong and Gulati (1987). Rather than focusing on turning points, the approach taken in Section 5 is to forecast directly the binary variable representing whether the economy is in recession or expansion six months hence. The main conclusion is that, among the binary-response models considered, expansions can be forecasted fairly reliably, recessions less so. Section 6 concludes.
+
+\subsection{The Coincident Indicator Model: specification and Estimation}
+
+One approach to studying aggregate fluctuations is to pick an important economic time series — say employment or GNP — as the object of interest for subsequent analysis and forecasting. This decided, life becomes relatively easy, since economists have decades of experience constructing models to analyse and to forecast observable time sereies variables. From the perspective of business cycle analysis, however, this approach is rather limited. Individual series measure more or less well-defined concepts, such as teh value of all goods and services produced in a quarter or the total number of individuals working for pay. But these series measure only various facets of the overall state of econoic activity; non measure the sate of the economy (in Burns and mitchell's (1946) terminoly, the ``reference cycle'') directly. Moreover, even the concepts that the series purport to measure are measured with error\footnote{Most modern research on the forecasitng potential of the index of leading indicators has focused on its ability to forecast not the reference cycle, but some observable series such as industrial production or unemployment (e.g., Stekler and Schepsman (1973), Vaccara and Zarnowitz (1978), Sargent (1979), Auerbach (1982), and Koch and Rassche (1988)). Our perspective is closer to that underlying the work of Diebold and Rudebusch (1987) and Hamilton (1987). For a historical review of the development of the leading indicators, see Moore (1979).}.
+
+The formulation developed here is based instead on the assumption that there is a single unobserved variable common to many macroeconomic time series. This places Burns and Mitchell's (1946) reference cycle in a fully specified probability model. The proposed model is a parametric version of the ``single-index'' models discussed by Sargent and Sims (1977), in which the single unobserved index is common to multiple macroeconomic variables. Estimated of this unobserved index, constructed using variables that move contemporaneously with this index, provide an alternative index of coincident indicators. This index can then be forecasted using leading variables.
+
+\subsubsection{The Single-Index Model}
+
+Let $X_t$ denote a $n\times 1$ vector of macroeconomic time series variables that are hypothesised to move contemporaneouslly with overall economic conditions. In the single-index model, $X_t$ consists of two stochastic components: the common unobserved scalar time series variable, or `ìndex'', $C_t$, and a $n$-dimensional component that represents idiosyncratic movements in the series and measurement error,~$v_t$. Both the unobserved index and the idiosyncratic component ar modeled as having linear stochastic structures. In addition, $C_t$ is assumed to enter each of the variables contemporaneously. This suggests the formulation:
+
+\begin{align}
+		X_t &= \beta\ones + \gamma C_t \ones + v_t \label{eq:model_eq1}\\
+		\tilde{\phi}(L) C_t &= \delta + \eta_t \\
+		\tilde{D}(L) v_t &= \varepsilon_t\label{eq:model_eq3}
+	\end{align}
+where $L$ denotes the lag operator, $\phi(L)$ is a scalar lag polynomials, and $D(L)$ is a lag polynomial matrix. According to (\ref{eq:model_eq1}), $C_t$ enters each of the $n$ equations in (\ref{eq:model_eq1}), although varying lags and weights.
+
+As an empirical matter, many macroeconomic time series are well characterised as contianing stochastic trends; see, for example, Nelson and Plosser (1982). A theoretical possibility is that these stochastic trends would enter through $C_t$; in this case, each element of $X_t$ would contain a stochastic trend, but this trend would be common to each element. Thus $X_t$ would be cointegrated of order $k-1$ as defined by Engle and Granger (1987). Looking ahead to the empirical results however, this turns out not to be the case: while we cannot reject the hypothesis that the coincident series we consider individually contain a stochastic trend, neither can we reject the the hypothesis that there is no cointegration among these variables. The system (\ref{eq:model_eq1})-(\ref{eq:model_eq3}) is therefore reformulated in terms of teh changes (or, more precisely, the growth rates) of the variables. Specifically, assume that $\phi(L)$ and $D(L)$ can befactored so that $\tilde{\phi}(L) = \phi(L)\Delta$ and $\tilde{D}(L) = D(L) \Delta$, where $\Delta = 1-L$. Let $Y_t = \Delta X_t$, and $u_t = \Delta v_t$, so that (\ref{eq:model_eq1})-(\ref{eq:model_eq3}) becomes:
+\begin{align}
+	Y_t &= \beta \ones + \gamma \Delta C_t \ones + u_t \label{eq:model_eq4}\\
+	\phi(L) C_t &= \delta + \eta_t \label{eq:model_eq5}\\
+	D(L) u_t &= \varepsilon_t\label{eq:model_eq6}
+\end{align}
+In practice, $X_t$ will be a vector of the logarithms of time series variables so that $Y_t$ is a vector of their growth rates. The lag polynomials $\phi(L)$ and $D(L)$ are assumed to have finite orders $p$ and $k$, respectively. 
+
+The main identifying assumption in the model expresses the core notion of the single-index model that the comovements of the multiple time series arise from the single source $C_t$. This is made precise by assuming that $\left(u_{1,t},\ldots, u_{n,t}, \Delta C_t\right)$ are mutually uncorrelated at all leads and lags. When there are four or more variables, this imposes testable overidentifying restrictions which will be examined empirically below. This is achieved by assuming that $D(L)$ is diagonal and that the $n+1$ disturbances are mutually uncorrelated:
+\begin{equation}
+	D(L) = \text{diag}\left(d_1(L), \ldots, d_n(L)\right)
+\end{equation}
+and
+\begin{equation}
+	\E\left((\eta_t, \varepsilon_t)'(\eta_t,\varepsilon_t)\right) = \text{diag}\left(\sigma_\eta^2, \sigma^2_{\varepsilon_1},\ldots, \sigma^2_{\varepsilon_n}\right)
+\end{equation}
+In addition, the scale of $\Delta C_t$ is identifying by setting $\sigma^2(\eta_t)=1$. This is a normalisation with no substantive implications.
+
+A final identifying assumption is required to estimate the mean growth rate for $C_{t|t}$. This mean is calculated here as a weighted average of the growth rates of the constituent series. The weigths are those implicitly used to construct $\Delta C_{t|t}$ from the original data series. That is, in this model, $\Delta C_{t|t}$ can be written 
+\begin{equation}
+	\delta = W(L) Y_t,
+\end{equation}
+where $W(L)$ is a $1\times n$ lag polynomial vector. The mean of $\Delta C_{t|t}$ equals $W(1)'\mu_Y$, where $W(1) = \sum_{i\geq 0}W_i$ and $\mu_Y$ denotes the mean of $Y_t$. This implies 
+\begin{equation}
+	\delta = \phi(1) W(1)'\mu_Y.
+\end{equation}
+Taken together, these assumptions provide sufficient identifying restrictions to estimate the unknown parameters of the model and to extract estimates of $C_t$.
+
+\subsubsection{State Space Representation}
+
+The first step towards estimating the model (\ref{eq:model_eq4})-(\ref{eq:model_eq6}) is to cast into a state space form so that the Kalman Filter can be used to evaluate the likelihood function. This formulation has two parts, the state equation and the measurement equation. The state equation describes the evolution of the unobserved state vector, which contains $\Delta C_t$, $u_t$ and their lags. The measurement equations relates the observed variables to the elements of the state vector. 
+
+The transition equation obstains by combining (\ref{eq:model_eq5}) and (\ref{eq:model_eq6}). Because the objective is to estimate the elvel of $C_t$ using information up to time $t$, it is convenient to augment these equations at this point by the identity $C_{t-1} = \Delta C_{t-1} + C_{t+2}$. The transition equation for the state is thus given by
+\begin{equation}\label{eq:transition_eq}
+	\begin{bmatrix}
+		C_t^\ast \\ u_t^\ast \\ C_{t-1}
+	\end{bmatrix}
+	=
+	\begin{bmatrix}
+		\Phi^\ast & 0 & 0 \\ 0 & D^\ast & 0 \\ Z_c & 0 & 1
+	\end{bmatrix}
+	\begin{bmatrix}
+		C_{t-1}^\ast \\ u_{t-1}^\ast \\ C_{t-1}
+	\end{bmatrix}
+	+ 
+	\begin{bmatrix}
+		Z_c & 0 \\ 0 & Z_u \\ 0 & 0
+	\end{bmatrix}
+	\begin{bmatrix}
+		\eta_t \\ \varepsilon_t
+	\end{bmatrix}
+\end{equation}
+where 
+\begin{equation}
+	\begin{aligned}
+		C_{t}^\ast &= 
+		\begin{bmatrix}
+			\Delta C_t &	\Delta C_{t-1} &\cdots \Delta C_{t-p+1}
+		\end{bmatrix}'
+	\\
+		u_t^\ast &= 
+		\begin{bmatrix}
+		u_t' & u_{t-1}' & \cdots & u_{t-k+1}'
+		\end{bmatrix}'
+	\\
+		\Phi^\ast &=
+		\begin{bmatrix}
+			\begin{matrix}
+			\phi_1 & \cdots  &\phi_{p-1} &
+			\end{matrix} & \phi_p\\
+			I_{p-1} & 0 
+		\end{bmatrix}
+	\\
+		D^\ast &=
+		\begin{bmatrix}
+			\begin{matrix}
+				D_1  & \cdots & D_{k-1} 
+			\end{matrix}& D_k\\
+		I_{n(k-1)} & 0 
+		\end{bmatrix}
+\end{aligned}
+\end{equation}
+and
+\begin{equation}
+	\begin{aligned}
+		Z_c & = \begin{bmatrix}
+			1 & 0_{1\times(p-1)}
+		\end{bmatrix}\\
+		Z_u & = \begin{bmatrix}
+			I_n & 0_{n\times n (k-1)}
+		\end{bmatrix}
+	\end{aligned}
+\end{equation}
+and where $I_n$ denotes the $n\times n$ identity matrix, $0_{n\times k}$ denotes a $n\times k$ matrix of zeros, and $D_i = \text{diag}(d_{1,i}, \ldots, d_{n,i}$), where $d_j(L) = 1- \sum_{i=1}^k d_{j,i} L^i$.
+
+The measurement equation is obtained by writing (\ref{eq:model_eq4}) as a linear combination of the state vector:
+\begin{equation}\label{eq:measurement_eq}
+	Y_t = \beta \ones + \begin{bmatrix}
+		\gamma Z_c \ones & Z_u & 0 
+	\end{bmatrix}
+	\begin{bmatrix}
+		C_t^\ast\\u_t^\ast \\ C_{t-1}
+	\end{bmatrix}
+\end{equation}
+The system (\ref{eq:measurement_eq}) and (\ref{eq:transition_eq}) can be rewritten more compactly in the standard form
+\begin{align}
+	\alpha_t & = T_t \alpha_{t-1} + R\zeta_t \label{eq:alpha}\\
+	Y_t & = \beta \ones + Z\alpha_t + \xi_t\label{eq:Y}
+\end{align}
+where
+\begin{equation}
+	\begin{aligned}
+		\alpha_t &= \begin{bmatrix}
+			(C_t^\ast)' & (u_t^\ast)' & C_{t-1}'\\
+		\end{bmatrix}'\\
+		\zeta_t & = \begin{bmatrix}
+		\eta_t & \varepsilon_t'
+	\end{bmatrix}'
+	\end{aligned}
+\end{equation}
+and where $T_t$, $R$ and $Z$ respectvely denote the transition matrix in (\ref{eq:transition_eq}), the selection matrix in (\ref{eq:transition_eq}), and the selection matrix in (\ref{eq:measurement_eq}). The covariance matrix of $\zeta_t$ is $\E\zeta_t\zeta_t'=\Sigma$. For generality, a measurement error term $\xi_t$ (assumed uncorrelated with $\eta_t$) has been added to the measurement equation (\ref{eq:Y}), and the transition matrix $T_t$ is allowed to vary over time. In empirical work below, however, the measurment noise is set to zero and the time invariant transition matrix in (\ref{eq:transition_eq}) is used\footnote{The state space representation (\ref{eq:measurement_eq}) and (\ref{eq:transition_eq}) is not unique. In practice, it is computationally more efficient to work with a lower dimensional state vector. This can be achieved by filtering $Y_t$, $\gamma\Delta C_t$ and $u_t$ in (\ref{eq:model_eq4}) by $D(L)$ and treating $\varepsilon_t$ as a measurement error. The resulting state vector has dimension $p+1$}.
+
+\subsubsection{Estimation}
+
+The Kalman Filter is a well-known way to compute the Gaussian likelihoodo function for a trial set of parameters; for a discusion, see Harvey (1981). The filter recursively constructs minimum mean square error (MSE) estimates of the unobserved state vector, given observations on $y_t$. The filter consists of two set of equations, the prediction and updating equations. Let $\alpha{t|\tau}$ denote the estimate of $\alpha_t$ based on $(y_1,\ldots, y_\tau)$, let $\E[\xi_t\xi_t'] = H$, and recall that $\E[\zeta_t\zeta_t'] = \Sigma$. Also, let $P_{t|\tau} = \E\left[\left(\alpha_{t|\tau}-\alpha_t\right)\left(\alpha_{t|\tau}-\alpha_t\right)'\right]$. With this notation, the prediction equations of the Kalman filter are:
+\begin{align}
+	\alpha_{t|t-1} &= T_t \alpha_{t-1|t-1}\label{eq:KF_eq12}\\
+	P_{t|t-1} &= T_t P_{t-1|t-1}T_t' + R\Sigma R'\label{eq:KF_eq13}
+\end{align}
+The forecast of $Y_t$ at time $t-1$ is $Y_{t|t-1} = \beta\ones + Z\alpha_{t|t-1}$, and the forecast error is $\nu_t=Y_t-\beta\ones - Z\alpha_{t|t-1}$. The updating equations of the filter are:
+\begin{align}
+	\alpha_{t|t} &= \alpha_{t|t-1} + P_{t|t-1} Z'F_t^{-1}\nu_t\label{eq:KF_eq14}\\
+	P_{t|t}& = P_{t|t-1} - P_{t|t-1}Z'F_t^{-1} Z P_{t|t-1}\label{eq:KF_eq15}
+\end{align}
+where $F_t = \E[\nu_t\nu_t'] = Z P_{t|t-1}Z' + H$. 
+
+The Kalman Filter equations (\ref{eq:KF_eq12})-(\ref{eq:KF_eq15}) permit recursive calculation of the predicted state vector, $\alpha_{t|t-1}$, and of the covariance matrix of this estimate, $P_{t|t-1}$, given the assumed parameters in $T_t$, $R$, $\Sigma$, $H$, and $Z$, and given initial values for $\alpha_{t|t}$ and $P_{t|t}$. For exact maximum likelihood estimation, these initial values are taken to be the unconditional expectation of $\alpha_t$ and its covariance matrix, $\E[(\alpha_t-\E\alpha_t)(\alpha_t-\E\alpha_t)']$; that is, $\alpha_{0|0}=0$, and $P_{0|0} = \sum_{j\geq 0} T_{t-j}^j \Sigma T_{t-j}^j$. Alternatively, one could set $P_{0|0}$ to an arbitrary constant matrix. In this case, the estimates are asymptotically equivalent to maximum likelihood.
+
+The Gaussian log likelihood is then computed (up to an additive constant) as:
+\begin{equation}
+	\mathcal{L} = \frac{1}{2}\sum_{t=1}^T \nu_t' F_{t}^{-1}\nu_t - \frac{1}{2}\sum_{t=1}^T \log \det F_t.
+\end{equation}
+The Gaussian maximum likelihood estimates of the parameters are found by maximising $\mathcal{L}$ over the parameter space.

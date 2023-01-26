@@ -1,0 +1,86 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+Dickey%
+\ \BBA {} Fuller%
+}{%
+Dickey%
+\ \BBA {} Fuller%
+}{%
+{\protect \APACyear {1979}}%
+}]{%
+dickey1979distribution}
+\APACinsertmetastar {%
+dickey1979distribution}%
+\begin{APACrefauthors}%
+Dickey, D\BPBI A.%
+\BCBT {}\ \BBA {} Fuller, W\BPBI A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1979}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Distribution of the estimators for autoregressive time
+  series with a unit root} {Distribution of the estimators for autoregressive
+  time series with a unit root}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Journal of the American statistical
+  association}{74}{366a}{427--431}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Engle%
+\ \BBA {} Granger%
+}{%
+Engle%
+\ \BBA {} Granger%
+}{%
+{\protect \APACyear {1987}}%
+}]{%
+engle1987co}
+\APACinsertmetastar {%
+engle1987co}%
+\begin{APACrefauthors}%
+Engle, R\BPBI F.%
+\BCBT {}\ \BBA {} Granger, C\BPBI W.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1987}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Co-integration and error correction: representation,
+  estimation, and testing} {Co-integration and error correction:
+  representation, estimation, and testing}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Econometrica: journal of the Econometric
+  Society}{}{}{251--276}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Stock%
+\ \BBA {} Watson%
+}{%
+Stock%
+\ \BBA {} Watson%
+}{%
+{\protect \APACyear {1989}}%
+}]{%
+stock&watson1989indexes}
+\APACinsertmetastar {%
+stock&watson1989indexes}%
+\begin{APACrefauthors}%
+Stock, J\BPBI H.%
+\BCBT {}\ \BBA {} Watson, M\BPBI W.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1989}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {New indexes of coincident and leading economic
+  indicators} {New indexes of coincident and leading economic
+  indicators}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{NBER macroeconomics annual}{4}{}{351--394}.
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}
