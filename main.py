@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 
 from kf import KF
+from ml import ML
 from matplotlib.animation import FuncAnimation
 from random import randrange
 from warnings import filterwarnings
@@ -173,6 +174,7 @@ def kalman_filter(Y, kf_params) -> tuple:
     gamma   = kf_params['gamma']
     # Initial values:
     C_vals = []
+    P_C_vals = []
 
     # Forecast errors:
     nu = []
@@ -189,9 +191,10 @@ def kalman_filter(Y, kf_params) -> tuple:
         P     = kf.P
         # Save the index, Ct, nu and F:
         C_vals.append(kf.C)
+        P_C_vals.append(kf.P_C)
         nu.append(kf.nu)
         F.append(kf.F)
-    return C_vals, nu, F
+    return C_vals, P_C_vals, nu, F
 
 def L(nu, F) -> float:
     T = len(nu)
@@ -237,8 +240,9 @@ def save_L(Ls,i) -> None:
     Ls_df["L"] = Ls
     Ls_df.to_csv("results/Ls.csv")
 
-def save_C(C,idx):
-    C = pd.DataFrame(C, columns=["C"], index=idx)
+def save_C(C, P_C, idx):
+    C = {"C": C, "P": P_C}
+    C = pd.DataFrame(C, columns=["C", "P"], index=idx)
     C.to_csv("results/C.csv")
 
 # CONDITIONS: 
@@ -249,42 +253,47 @@ def min_is_not_the_min_anymore(min_value, new_value)->bool:
 def main():
     # Let's take the time series variables. Thiese variables, as in Stock and Watson (1989), consists of the growth rates of 
     # the logarithms of (describe it).
-    Y =ts_vars() 
+    Y = ts_vars() 
     n = len(Y.columns)
     # Space of params
     betas, d1s, d2s, sigmas, gammas, phis, Hs = param_space(n,2,int(3e5))
+    phi, D, Sigma, beta, gamma, H = take_random_params(phis,d1s,d2s,sigmas,betas,gammas, Hs)
+    params = update_params(beta,phi,D,Sigma,gamma, H)
+    kf_params  = kf_parameters(params)
+    ml = ML(Y=Y, kf_params=kf_params)
+    print(ml.optimisation())
     # Initiation:
     first_iteration = True
     max_it = int(2e6)
     it=1
     i=[]
     Ls = []
-    for it in range(max_it):
-        # Randomly choose a parameter
-        phi, D, Sigma, beta, gamma, H = take_random_params(phis,d1s,d2s,sigmas,betas,gammas, Hs)
-        params = update_params(beta,phi,D,Sigma,gamma, H)
-        try: 
-            kf_params       = kf_parameters(params)
-            C_vals, nu, F   = kalman_filter(Y, kf_params) # Apply the Kalman filter
-            new_L           = -L(nu,F)  # Calculate the Maximum likelihood
-            if ~((np.isnan(new_L)) or (np.isinf(new_L))):
-                if it%100==0: display_L(new_L, it) # Display each 100 iterations
-                if first_iteration:
-                    min_L = new_L
-                    first_iteration = False
-                elif min_is_not_the_min_anymore(min_L,new_L) and not first_iteration: # minimising the -L
-                    min_L = new_L
-                    display_control(it, params, new_L)
-                    # Create and save the dataframe for the index:
-                    save_C(C_vals,Y.index)
-                    # Save L:
-                    Ls.append(min_L)
-                    i.append(it)
-                else:
-                    continue
-                save_L(Ls,i)
-        except(LinAlgError):
-            continue
+    # for it in range(max_it):
+    #     # Randomly choose a parameter
+    #     phi, D, Sigma, beta, gamma, H = take_random_params(phis,d1s,d2s,sigmas,betas,gammas, Hs)
+    #     params = update_params(beta,phi,D,Sigma,gamma, H)
+    #     try: 
+    #         kf_params               = kf_parameters(params)
+    #         C_vals, P_C_vals, nu, F = kalman_filter(Y, kf_params) # Apply the Kalman filter
+    #         new_L                   = -L(nu,F)  # Calculate the Maximum likelihood
+    #         if ~((np.isnan(new_L)) or (np.isinf(new_L))):
+    #             if it%100==0: display_L(new_L, it) # Display each 100 iterations
+    #             if first_iteration:
+    #                 min_L = new_L
+    #                 first_iteration = False
+    #             elif min_is_not_the_min_anymore(min_L,new_L) and not first_iteration: # minimising the -L
+    #                 min_L = new_L
+    #                 display_control(it, params, new_L)
+    #                 # Create and save the dataframe for the index:
+    #                 save_C(C_vals, P_C_vals, Y.index)
+    #                 # Save L:
+    #                 Ls.append(min_L)
+    #                 i.append(it)
+    #             else:
+    #                 continue
+    #             save_L(Ls,i)
+    #     except(LinAlgError):
+    #         continue
 
 
 if __name__ == "__main__":

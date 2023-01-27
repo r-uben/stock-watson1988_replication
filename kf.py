@@ -24,7 +24,9 @@ class KF(object):
         self._Y = Y
         # phi should be a row vector (np.array)
         if type(phi)==list: self._phi = np.array([phi])
-        if (type(phi)==np.array) and (phi.shape[0] > 1): self._phi = phi.T
+        else: 
+            if (phi.shape[0] > 1): 
+                self._phi = phi.reshape(1, phi.shape[0])
         self._p = int(self._phi.shape[1])
         # D should be a dictionary of matrices
         try:
@@ -58,29 +60,37 @@ class KF(object):
         # alpha = T alpha
         # P     = T P T' + R Sigma R'
         new_alpha = self.T.dot(self._alpha)
-        new_P     = self.T.dot(self._P).dot(self.T.T) + self.R.dot(self._Sigma).dot(self.R.T)
+        new_P     = self.T.dot(self._P).dot(self.T.T) + self.Q
         
         self._pred_alpha = new_alpha
         self._pred_P     = new_P
 
     def update(self):
-        F_inv = inv(self.F)
         # alpha = pred_alpha + pred_P Z' F_inv nu
         # P     = pred_P    + pred_P Z' F_inv Z pred_P
-        new_alpha   = self._pred_alpha + self._pred_P.dot(self.Z.T).dot(F_inv).dot(self.nu) # + H=0
-        new_P       = self._pred_P - self._pred_P.dot(self.Z.T).dot(F_inv).dot(self.Z).dot(self._pred_P) 
+        new_alpha   = self._pred_alpha + self.K.dot(self.nu) # + H=0
+        new_P       = self._pred_P - self.K.dot(self.Z).dot(self._pred_P) 
 
         self._alpha = new_alpha
         self._P     = new_P
 
     @property
-    def nu(self):
+    def nu(self) -> np.array:
         return self._Y - self._beta*np.ones((self.n,1)) - self.Z.dot(self._pred_alpha)
 
     @property
-    def F(self):
+    def F(self) -> np.array:
         return self.Z.dot(self._pred_P).dot(self.Z.T) + self._H
     
+    @property
+    def K(self) -> np.array:
+        F_inv = inv(self.F)
+        return self._pred_P.dot(self.Z.T).dot(F_inv)
+
+    @property
+    def Q(self) -> np.array:
+        return self.R.dot(self._Sigma).dot(self.R.T)
+
     @property
     def T(self):
         # top
@@ -175,6 +185,14 @@ class KF(object):
         left = np.concatenate([self.Zc,np.zeros((1,self.k*self.n)),np.ones((1,1))], axis=1)
         right = self.alpha 
         return float(left.dot(right))
+
+    @property
+    def P_C(self) -> float:
+        '''C_{t|t} = [Zc 0 1] alpha'''
+        left = np.concatenate([self.Zc,np.zeros((1,self.k*self.n)),np.ones((1,1))], axis=1)
+        center = self.P 
+        right = left.T
+        return float(left.dot(center).dot(right))
 
     ## PARAMETERS:
     @property
