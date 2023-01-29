@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 
 from kf import KF
 from ml import ML
+from __helpers.table import Table
+from __helpers.aux import Aux
 from matplotlib.animation import FuncAnimation
 from random import randrange
 from warnings import filterwarnings
@@ -211,39 +213,6 @@ def L(nu, F) -> float:
     L *= 1/2
     return L
 
-# SAVERS:
-
-def save_params(params, L, names=["IP", "DPI", "TS", "AW"]) -> None:
-    ts_vars_df = pd.DataFrame(index=["gammai", "d1i", "d2i", "sigmai"], columns=names)
-    C_params_df = pd.DataFrame(index = ["value"], columns=["phi1", "phi2"])
-    L_df = pd.DataFrame(index=["value"], columns=["L"])
-
-    for i in range(len(ts_vars_df.columns)):
-        # the [0] is for taking just the number and not the [number]
-        ts_vars_df.loc["$\gamma_i$", ts_vars_df.columns[i]] = params["gamma%i"%(i+1)][0]
-        ts_vars_df.loc["$d_{1 i}$", ts_vars_df.columns[i]] = params["d1%i"%(i+1)][0]
-        ts_vars_df.loc["$d_{2 i}$", ts_vars_df.columns[i]] = params["d2%i"%(i+1)][0]
-        ts_vars_df.loc["$\sigma_i$", ts_vars_df.columns[i]] = params["sigma%i"%(i+1)][0]
- 
-    for j in range(2):
-        C_params_df.loc["value", "phi%i"%(j+1)] = params["phi%i"%(j+1)][0]
-    
-    L_df.loc["value", "L"] = round(L,4)
-
-    ts_vars_df.to_csv("results/ts_vars.csv", index=True)
-    C_params_df.to_csv("results/C_params.csv", index=False)
-    L_df.to_csv("results/L.csv", index=False)
-    
-def save_L(Ls,i) -> None:
-    Ls_df = pd.DataFrame()
-    Ls_df["n_iter"] = i
-    Ls_df["L"] = Ls
-    Ls_df.to_csv("results/Ls.csv")
-
-def save_C(C, P_C, idx):
-    C = {"C": C, "P": P_C}
-    C = pd.DataFrame(C, columns=["C", "P"], index=idx)
-    C.to_csv("results/C.csv")
 
 # CONDITIONS: 
 
@@ -256,46 +225,60 @@ def main():
     Y = ts_vars() 
     n = len(Y.columns)
     # Space of params
+    #while True:
     betas, d1s, d2s, sigmas, gammas, phis, Hs = param_space(n,2,int(3e5))
     phi, D, Sigma, beta, gamma, H = take_random_params(phis,d1s,d2s,sigmas,betas,gammas, Hs)
     params = update_params(beta,phi,D,Sigma,gamma, H)
     kf_params  = kf_parameters(params)
     ml = ML(Y=Y, kf_params=kf_params)
-    print(ml.optimisation())
+    ml.optimisation()
+    # break
+
+def brute_force():
+    aux = Aux()
+    Y = ts_vars() 
+    n = len(Y.columns)
+    # Space of params
+    betas, d1s, d2s, sigmas, gammas, phis, Hs = param_space(n,2,int(3e5))
     # Initiation:
     first_iteration = True
     max_it = int(2e6)
     it=1
     i=[]
     Ls = []
-    # for it in range(max_it):
-    #     # Randomly choose a parameter
-    #     phi, D, Sigma, beta, gamma, H = take_random_params(phis,d1s,d2s,sigmas,betas,gammas, Hs)
-    #     params = update_params(beta,phi,D,Sigma,gamma, H)
-    #     try: 
-    #         kf_params               = kf_parameters(params)
-    #         C_vals, P_C_vals, nu, F = kalman_filter(Y, kf_params) # Apply the Kalman filter
-    #         new_L                   = -L(nu,F)  # Calculate the Maximum likelihood
-    #         if ~((np.isnan(new_L)) or (np.isinf(new_L))):
-    #             if it%100==0: display_L(new_L, it) # Display each 100 iterations
-    #             if first_iteration:
-    #                 min_L = new_L
-    #                 first_iteration = False
-    #             elif min_is_not_the_min_anymore(min_L,new_L) and not first_iteration: # minimising the -L
-    #                 min_L = new_L
-    #                 display_control(it, params, new_L)
-    #                 # Create and save the dataframe for the index:
-    #                 save_C(C_vals, P_C_vals, Y.index)
-    #                 # Save L:
-    #                 Ls.append(min_L)
-    #                 i.append(it)
-    #             else:
-    #                 continue
-    #             save_L(Ls,i)
-    #     except(LinAlgError):
-    #         continue
+    for it in range(max_it):
+        # Randomly choose a parameter
+        phi, D, Sigma, beta, gamma, H = take_random_params(phis,d1s,d2s,sigmas,betas,gammas, Hs)
+        params = update_params(beta,phi,D,Sigma,gamma, H)
+        try: 
+            kf_params               = kf_parameters(params)
+            C_vals, P_C_vals, nu, F = kalman_filter(Y, kf_params) # Apply the Kalman filter
+            new_L                   = -L(nu,F)  # Calculate the Maximum likelihood
+            if ~((np.isnan(new_L)) or (np.isinf(new_L))):
+                if it%100==0: display_L(new_L, it) # Display each 100 iterations
+                if first_iteration:
+                    min_L = new_L
+                    first_iteration = False
+                elif min_is_not_the_min_anymore(min_L,new_L) and not first_iteration: # minimising the -L
+                    min_L = new_L
+                    display_control(it, params, new_L)
+                    # Create and save the dataframe for the index:
+                    aux.save_C(C_vals, P_C_vals, Y.index)
+                    # Save L:
+                    Ls.append(min_L)
+                    i.append(it)
+                else:
+                    continue
+                aux.save_L(Ls,i)
+        except(LinAlgError):
+            continue
+
 
 
 if __name__ == "__main__":
     main()
+    mytab = Table(name="params")
+    mytab.write_tab()
+
+
 

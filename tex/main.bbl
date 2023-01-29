@@ -57,6 +57,62 @@ Engle, R\BPBI F.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Gupta%
+\ \BBA {} Mehra%
+}{%
+Gupta%
+\ \BBA {} Mehra%
+}{%
+{\protect \APACyear {1974}}%
+}]{%
+gupta1974computational}
+\APACinsertmetastar {%
+gupta1974computational}%
+\begin{APACrefauthors}%
+Gupta, N.%
+\BCBT {}\ \BBA {} Mehra, R.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1974}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Computational aspects of maximum likelihood estimation
+  and reduction in sensitivity function calculations} {Computational aspects of
+  maximum likelihood estimation and reduction in sensitivity function
+  calculations}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{IEEE transactions on automatic
+  control}{19}{6}{774--783}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Stock%
+\ \BBA {} Watson%
+}{%
+Stock%
+\ \BBA {} Watson%
+}{%
+{\protect \APACyear {1988}}%
+}]{%
+stock1988probability}
+\APACinsertmetastar {%
+stock1988probability}%
+\begin{APACrefauthors}%
+Stock, J\BPBI H.%
+\BCBT {}\ \BBA {} Watson, M\BPBI W.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{1988}{}{}.
+\newblock
+\APACrefbtitle {A probability model of the coincident economic indicators.} {A
+  probability model of the coincident economic indicators.}
+\newblock
+\APACaddressPublisher{}{National Bureau of Economic Research Cambridge, Mass.,
+  USA}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Stock%
 \ \BBA {} Watson%
 }{%

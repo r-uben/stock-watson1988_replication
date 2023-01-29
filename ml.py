@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 from kf import KF
+from __helpers.aux import Aux
 from scipy.optimize import minimize 
 from numpy.linalg import det, inv, LinAlgError
 
@@ -17,13 +18,19 @@ class ML(object):
         self._D2   = kf_params["D"][2]
         self._Sigma = kf_params["Sigma"]
         self._Y     = Y
-
+        self._params = [self.beta] + [self.H] + self.phi + self.gamma + self.D1 + self.D2 + self.Sigma
+        self._params = np.array(self._params)
         self._num_it = 0
-    @property
-    def optimisation(self) -> None:
-        return minimize(self.L, self.params, method='CG', bounds=self.bounds)
+        self.aux = Aux()
 
-    def kalman_filter(self,params) -> tuple:
+    def optimisation(self) -> None:
+        bounds = self.bounds
+        mle = minimize(self.L, self.params, method='BFGS', hess=True)
+        se = list(np.sqrt(np.diag(mle.hess_inv)))
+        se = self.dict_se(se)
+        self.aux.save_se(se)
+
+    def kalman_filter(self, params) -> tuple:
         # params
         beta, H, phi1, phi2, gamma1, gamma2, gamma3, gamma4, d11, d12, d13, d14, d21, d22, d23, d24, sigma1, sigma2, sigma3, sigma4 = params     
         phi     = np.array([phi1, phi2])
@@ -43,9 +50,9 @@ class ML(object):
         for t in range(len(self._Y.index)):
             y = self._Y.iloc[t].to_numpy().reshape(len(self._Y.columns),1) # I need this because neither .T nor .transpose() is working
             if t==0:
-                kf = KF(Y=y,phi=phi, D=D, Sigma=Sigma, beta=beta, gamma=gamma, H=H)
+                kf = KF(Y=y,phi=phi, D=D, Sigma=Sigma, beta=beta, gamma=gamma, H=0)
             else:
-                kf = KF(Y=y,phi=phi, D=D, Sigma=Sigma, beta=beta, gamma=gamma, H=H,alpha=alpha, P=P)
+                kf = KF(Y=y,phi=phi, D=D, Sigma=Sigma, beta=beta, gamma=gamma, H=0,alpha=alpha, P=P)
             kf.predict()
             kf.update()
             alpha = kf.alpha
@@ -58,10 +65,11 @@ class ML(object):
         return C_vals, P_C_vals, nu, F
 
     def L(self, params):
+        self._params = params
         self._num_it +=1
 
         C_vals, P_C_vals, nu, F = self.kalman_filter(params)
-        self.save_C(C_vals, P_C_vals, self._Y.index)
+        self.aux.save_C(C_vals, P_C_vals, self._Y.index)
         T = len(nu)
         L = 0
         for t in range(T):
@@ -75,41 +83,17 @@ class ML(object):
                 break
         L *= 1/2
         print(str(self._num_it) + ":", L)
-        d_params = self.dict_params(params)
-        self.save_params(d_params, L)
+        d_params = self.dict_params(params=params)
+        self.aux.save_params(params=d_params, L=L)
         return L
 
-    def save_params(params, L, names=["IP", "DPI", "TS", "AW"]) -> None:
-        ts_vars_df = pd.DataFrame(index=["gammai", "d1i", "d2i", "sigmai"], columns=names)
-        C_params_df = pd.DataFrame(index = ["value"], columns=["phi1", "phi2"])
-        L_df = pd.DataFrame(index=["value"], columns=["L"])
-
-        for i in range(len(ts_vars_df.columns)):
-            # the [0] is for taking just the number and not the [number]
-            ts_vars_df.loc["$\gamma_i$", ts_vars_df.columns[i]] = params["gamma%i"%(i+1)][0]
-            ts_vars_df.loc["$d_{1 i}$", ts_vars_df.columns[i]] = params["d1%i"%(i+1)][0]
-            ts_vars_df.loc["$d_{2 i}$", ts_vars_df.columns[i]] = params["d2%i"%(i+1)][0]
-            ts_vars_df.loc["$\sigma_i$", ts_vars_df.columns[i]] = params["sigma%i"%(i+1)][0]
-    
-        for j in range(2):
-            C_params_df.loc["value", "phi%i"%(j+1)] = params["phi%i"%(j+1)][0]
-        
-        L_df.loc["value", "L"] = round(L,4)
-
-        ts_vars_df.to_csv("results/ts_vars.csv", index=True)
-        C_params_df.to_csv("results/C_params.csv", index=False)
-        L_df.to_csv("results/L.csv", index=False)
-
-    def save_L(self,Ls,i) -> None:
-        Ls_df = pd.DataFrame()
-        Ls_df["n_iter"] = i
-        Ls_df["L"] = Ls
-        Ls_df.to_csv("results/Ls.csv")
-
-    def save_C(self,C, P_C, idx):
-        C = {"C": C, "P": P_C}
-        C = pd.DataFrame(C, columns=["C", "P"], index=idx)
-        C.to_csv("results/C.csv")
+    def save_se(self, mle):
+        se = list(np.sqrt(np.diag(mle.hess_inv)))
+        params = self.dict_params(params=self.params)
+        params = params.keys()
+        se = dict(zip(params,se))
+        se = pd.DataFrame(se, index=[0])
+        se.to_csv(self.aux.results_path + "/se.csv")
 
     def dict_params(self, params) -> dict:
         beta, H, phi1, phi2, gamma1, gamma2, gamma3, gamma4, d11, d12, d13, d14, d21, d22, d23, d24, sigma1, sigma2, sigma3, sigma4 = params
@@ -133,15 +117,17 @@ class ML(object):
             "sigma1": sigma1,
             "sigma2": sigma2,
             "sigma3": sigma3,
-            "sigma4": sigma4,
+            "sigma4": sigma4
         }
         return my_dict
 
+    def dict_se(self, se) -> dict:
+        return self.dict_params(se)
 
     @property
     def bounds(self):
-        bound_beta = [(-1,1)]
-        bound_H    = [(0,1)]
+        bound_beta = (-1,1)
+        bound_H    = (0,1)
         bound_phi1 = bound_beta
         bound_phi2 = bound_beta   
         bound_gamma1 = bound_beta
@@ -167,12 +153,9 @@ class ML(object):
         bounds = bounds + bound_sigma1 + bound_sigma2 + bound_sigma3 + bound_sigma4
         return bounds
     
-
     @property
     def params(self):
-        p = [self.beta] + [self.H] + self.phi + self.gamma + self.D1 + self.D2 + self.Sigma
-        return np.array(p)
-
+        return self._params
 
     @property
     def beta(self) -> float:

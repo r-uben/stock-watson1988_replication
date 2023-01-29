@@ -70,7 +70,7 @@ The measurement equation is:
 		C_t^\ast\\u_t^\ast \\ C_{t-1}
 	\end{bmatrix},
 \end{equation}
-where $\ones$ is a vector of ones in $\R^n$, with $n$ being the number of time series variables used to estimate the index; and $\gamma\in \R^n$ containes each specific loading with respect to $C_t\ast$. Note then that $\gamma Z_c\in \R^{n\times (p-1)}$. The system can be rewritten more compactly in the standard form
+where $\ones$ is a vector of ones in $\R^n$, with $n$ being the number of time series variables used to estimate the index; and $\gamma\in \R^n$ contains each specific loading with respect to $C_t\ast$. Note then that $\gamma Z_c\in \R^{n\times (p-1)}$. The system can be rewritten more compactly in the standard form
 \begin{align}
 	\alpha_t & = T \alpha_{t-1} + R\zeta_t \label{eq:alpha}\\
 	Y_t & = \beta \ones + Z\alpha_t + \xi_t\label{eq:Y}
@@ -99,3 +99,4 @@ The forecast of $Y_t$ at time $t-1$ is $$Y_{t|t-1} = \beta\ones + Z\alpha_{t|t-1
 where $F_t = \E[\nu_t\nu_t'] = Z P_{t|t-1}Z' + H$. In this specification, and following \citeA{stock&watson1989indexes}, we take $T_t$ to be constant and $H=0$.
 
 
+Note that $\gamma$ can be taken more generally as $\gamma(L)$, as it is dones, for instance, in \citeA{stock1988probability}. However, for the sake of simplicity now, we are just considering $\gamma(L) = \gamma$ to be just a vector in $\R^n$.
