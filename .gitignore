@@ -4,4 +4,5 @@
 *.log
 *.out
 *.sty
-*.synctex.grz
+*.synctex.gz
+*.blg
