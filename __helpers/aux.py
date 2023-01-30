@@ -45,21 +45,21 @@ class Aux:
         return x
 
     def dt_idx(self, x) -> pd.DataFrame:
-        x.index = pd.to_datetime(x.index)
+        x.index = pd.to_datetime(x.index, format='%Y-%m-%d')
         return x
 
     def save_myfig(self, name: str,fig: plt.figure) -> None:
         if ".eps" not in name: name += ".eps"
         fig.savefig(self._fig_path+name, format="eps")
 
-    def save_params(self, params, L, names=["IP", "GMYX", "LPMH", "LPMHU"]) -> None:
+    def save_params(self, params, L, name, name_cols=["IP", "GMYX", "LPMH", "LPMHU"]) -> None:
 
         gammai = "gammai"
         d1i    = "d1i"
         d2i    = "d2i"
         sigmai = "sigmai"
 
-        ts_vars_df = pd.DataFrame(index=[gammai], columns=names)
+        ts_vars_df = pd.DataFrame(index=[gammai], columns=name_cols)
         C_params_df = pd.DataFrame(index = ["value"], columns=["phi1", "phi2"])
         L_df = pd.DataFrame(index=["value"], columns=["L"])
 
@@ -74,17 +74,17 @@ class Aux:
         
         L_df.loc["value", "L"] = round(L,4)
 
-        ts_vars_df.to_csv(self._results_path + "ts_vars.csv", index=True)
-        C_params_df.to_csv(self._results_path + "C_params.csv", index=False)
-        L_df.to_csv(self._results_path + "L.csv", index=False)
+        ts_vars_df.to_csv(self._results_path + name + "ts_vars.csv", index=True)
+        C_params_df.to_csv(self._results_path + name + "C_params.csv", index=False)
+        L_df.to_csv(self._results_path + name + "L.csv", index=False)
 
-    def save_se(self, se, names=["IP", "GMYX", "LPMH", "LPMHU"]):
+    def save_se(self, se, name, name_cols=["IP", "GMYX", "LPMH", "LPMHU"]):
         gammai = "gammai"
         d1i    = "d1i"
         d2i    = "d2i"
         sigmai = "sigmai"
 
-        se_df = pd.DataFrame(index=[gammai], columns=names)
+        se_df = pd.DataFrame(index=[gammai], columns=name_cols)
 
         for i in range(len(se_df.columns)):
             se_df.loc[gammai, se_df.columns[i]] = round(se["gamma%i"%(i+1)],4)
@@ -92,18 +92,18 @@ class Aux:
             se_df.loc[d2i, se_df.columns[i]]  = round(se["d2%i"%(i+1)],4)
             se_df.loc[sigmai, se_df.columns[i]]  = round(se["sigma%i"%(i+1)],4)
 
-        se_df.to_csv(self.results_path + "/se.csv")
+        se_df.to_csv(self.results_path + name + "se.csv")
 
-    def save_L(self,Ls,i) -> None:
+    def save_L(self,Ls,i,name) -> None:
         Ls_df = pd.DataFrame()
         Ls_df["n_iter"] = i
         Ls_df["L"] = Ls
-        Ls_df.to_csv(self._results_path + "Ls.csv")
+        Ls_df.to_csv(self._results_path + name + "Ls.csv")
 
-    def save_C(self,C, P_C, idx):
+    def save_C(self,C, P_C, idx, name):
         C = {"C": C, "P": P_C}
         C = pd.DataFrame(C, columns=["C", "P"], index=idx)
-        C.to_csv(self._results_path + "C.csv")
+        C.to_csv(self._results_path + name + "C.csv")
 
     @property
     def results_path(self):

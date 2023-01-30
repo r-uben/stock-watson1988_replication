@@ -49,19 +49,12 @@ def standardise(dataframe):
         dataframe[col] = (dataframe[col]-dataframe[col].mean()) / dataframe[col].std()
     return dataframe
 
-def ts_vars(columns=None) -> pd.DataFrame:
-    if columns is not None:
-        api_key = '4019aab16a6b45cf86e11574d74e2e5b3681ee13'
-        ek.set_app_key(api_key)
-        Z = ek.get_timeseries(columns,
-        start_date='2014-12-15',
-        end_date='2022-8-31',
-        interval='monthly')
-        Z.columns = ["Industrial Production", "Disposable Personal Income", "Trade Sales", "Average Workweek"]
-        Z.index = pd.to_datetime(Z.index, format="%Y-%m%-d")
+def ts_vars(name) -> pd.DataFrame:
+    if "new" in name:
+        Z = pd.read_csv("data/newdata.csv", index_col=0)
     else:
         Z = pd.read_csv("data/s&w1989.csv", index_col=0)
-        Z.index.name = None
+    Z.index.name = None
     Y = standardise(Δ(log_df(Z)))
     return Y
 
@@ -219,66 +212,72 @@ def L(nu, F) -> float:
 def min_is_not_the_min_anymore(min_value, new_value)->bool:
     return min_value > new_value
 
-def main():
+def main(name):
     # Let's take the time series variables. Thiese variables, as in Stock and Watson (1989), consists of the growth rates of 
     # the logarithms of (describe it).
-    Y = ts_vars() 
-    n = len(Y.columns)
-    # Space of params
-    #while True:
-    betas, d1s, d2s, sigmas, gammas, phis, Hs = param_space(n,2,int(3e5))
-    phi, D, Sigma, beta, gamma, H = take_random_params(phis,d1s,d2s,sigmas,betas,gammas, Hs)
-    params = update_params(beta,phi,D,Sigma,gamma, H)
-    kf_params  = kf_parameters(params)
-    ml = ML(Y=Y, kf_params=kf_params)
-    ml.optimisation()
-    # break
 
-def brute_force():
-    aux = Aux()
-    Y = ts_vars() 
+    Y = ts_vars(name=name).dropna()
     n = len(Y.columns)
     # Space of params
     betas, d1s, d2s, sigmas, gammas, phis, Hs = param_space(n,2,int(3e5))
-    # Initiation:
-    first_iteration = True
-    max_it = int(2e6)
-    it=1
-    i=[]
-    Ls = []
-    for it in range(max_it):
-        # Randomly choose a parameter
-        phi, D, Sigma, beta, gamma, H = take_random_params(phis,d1s,d2s,sigmas,betas,gammas, Hs)
-        params = update_params(beta,phi,D,Sigma,gamma, H)
-        try: 
-            kf_params               = kf_parameters(params)
-            C_vals, P_C_vals, nu, F = kalman_filter(Y, kf_params) # Apply the Kalman filter
-            new_L                   = -L(nu,F)  # Calculate the Maximum likelihood
-            if ~((np.isnan(new_L)) or (np.isinf(new_L))):
-                if it%100==0: display_L(new_L, it) # Display each 100 iterations
-                if first_iteration:
-                    min_L = new_L
-                    first_iteration = False
-                elif min_is_not_the_min_anymore(min_L,new_L) and not first_iteration: # minimising the -L
-                    min_L = new_L
-                    display_control(it, params, new_L)
-                    # Create and save the dataframe for the index:
-                    aux.save_C(C_vals, P_C_vals, Y.index)
-                    # Save L:
-                    Ls.append(min_L)
-                    i.append(it)
-                else:
-                    continue
-                aux.save_L(Ls,i)
-        except(LinAlgError):
-            continue
+    # Take initial parameters (randomly)
+    phi, D, Sigma, beta, gamma, H = take_random_params(phis,d1s,d2s,sigmas,betas,gammas, Hs)
+    # Save them in the appropriate format
+    params = update_params(beta,phi,D,Sigma,gamma, H)
+    # Now in the appropriate format for the Kalman Filter
+    kf_params  = kf_parameters(params)
+    ml = ML(Y=Y, kf_params=kf_params, name=name)
+    ml.optimisation()
 
 
 
 if __name__ == "__main__":
-    main()
-    mytab = Table(name="params")
+    name=str(input("What data do you want to use?: "))
+    if ("sw" in name) or ("old" in name): name = "sw_"
+    if ("new" in name): name="newdata_"
+    #main()
+    mytab = Table(name=name)
     mytab.write_tab()
 
 
 
+
+
+# def brute_force():
+#     aux = Aux()
+#     Y = ts_vars() 
+#     n = len(Y.columns)
+#     # Space of params
+#     betas, d1s, d2s, sigmas, gammas, phis, Hs = param_space(n, 2, int(3e5))
+#     # Initiation:
+#     first_iteration = True
+#     max_it = int(2e6)
+#     it=1
+#     i=[]
+#     Ls = []
+#     for it in range(max_it):
+#         # Randomly choose a parameter
+#         phi, D, Sigma, beta, gamma, H = take_random_params(phis,d1s,d2s,sigmas,betas,gammas, Hs)
+#         params = update_params(beta,phi,D,Sigma,gamma, H)
+#         try: 
+#             kf_params               = kf_parameters(params)
+#             C_vals, P_C_vals, nu, F = kalman_filter(Y, kf_params) # Apply the Kalman filter
+#             new_L                   = -L(nu,F)  # Calculate the Maximum likelihood
+#             if ~((np.isnan(new_L)) or (np.isinf(new_L))):
+#                 if it%100==0: display_L(new_L, it) # Display each 100 iterations
+#                 if first_iteration:
+#                     min_L = new_L
+#                     first_iteration = False
+#                 elif min_is_not_the_min_anymore(min_L,new_L) and not first_iteration: # minimising the -L
+#                     min_L = new_L
+#                     display_control(it, params, new_L)
+#                     # Create and save the dataframe for the index:
+#                     aux.save_C(C_vals, P_C_vals, Y.index)
+#                     # Save L:
+#                     Ls.append(min_L)
+#                     i.append(it)
+#                 else:
+#                     continue
+#                 aux.save_L(Ls,i)
+#         except(LinAlgError):
+#             continue

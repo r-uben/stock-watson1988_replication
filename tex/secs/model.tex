@@ -79,24 +79,24 @@ where
 \begin{equation}
 	\begin{aligned}
 		\alpha_t &= \begin{bmatrix}
-			(C_t^\ast)' & (u_t^\ast)' & C_{t-1}'\\
-		\end{bmatrix}'\\
+			(C_t^\ast)^\t & (u_t^\ast)^\t & C_{t-1}^\t\\
+		\end{bmatrix}^\t\\
 		\zeta_t & = \begin{bmatrix}
-			\eta_t & \varepsilon_t'
-		\end{bmatrix}'
+			\eta_t & \varepsilon_t^\t
+		\end{bmatrix}^\t
 	\end{aligned}
 \end{equation}
 and where $T_t$, $R$ and $Z$ respectively denote the transition matrix, the selection matrix, and the selection matrix. The covariance matrix of $\zeta_t$ is $\E\zeta_t\zeta_t'=\Sigma$. We also assume that $\sigma^2(\eta_t) = 1$ and that $\Sigma$ is diagonal. The Kalman filter prediction equations are: 
 \begin{align}
-	\_{t|t-1} &= T_t \alpha_{t-1|t-1}\\
+	\alpha_{t|t-1} &= T_t \alpha_{t-1|t-1}\\
 	P_{t|t-1} &= T_t P_{t-1|t-1}T_t' + R\Sigma R'
 \end{align}
-The forecast of $Y_t$ at time $t-1$ is $$Y_{t|t-1} = \beta\ones + Z\alpha_{t|t-1},$$ and the forecast error is $$\nu_t=Y_t-\beta\ones - Z\alpha_{t|t-1}.$$ The updating equations of the filter are:
+with $\ones\in\R^n$ being a vector of ones. The forecast of $Y_t$ at time $t-1$ is thus $$Y_{t|t-1} = \beta\ones + Z\alpha_{t|t-1},$$ and the forecast error is $$\nu_t=Y_t-\beta\ones - Z\alpha_{t|t-1}.$$ The updating equations of the filter are:
 \begin{align}
 	\alpha_{t|t} &= \alpha_{t|t-1} + P_{t|t-1} Z'F_t^{-1}\nu_t\\
 	P_{t|t}& = P_{t|t-1} - P_{t|t-1}Z'F_t^{-1} Z P_{t|t-1}
 \end{align}
-where $F_t = \E[\nu_t\nu_t'] = Z P_{t|t-1}Z' + H$. In this specification, and following \citeA{stock&watson1989indexes}, we take $T_t$ to be constant and $H=0$.
+where $F_t = \E[\nu_t\nu_t'] = Z P_{t|t-1}Z' + H$. In this specification, and following \citeA{stock&watson1989indexes}, we take $T_t$ to be constant, i.e., $T_t = T$; and $H=0$.
 
 
 Note that $\gamma$ can be taken more generally as $\gamma(L)$, as it is dones, for instance, in \citeA{stock1988probability}. However, for the sake of simplicity now, we are just considering $\gamma(L) = \gamma$ to be just a vector in $\R^n$.

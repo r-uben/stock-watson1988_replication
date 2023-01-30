@@ -8,7 +8,7 @@ from numpy.linalg import det, inv, LinAlgError
 
 class ML(object):
 
-    def __init__(self,  Y, kf_params) -> None:
+    def __init__(self,  Y, kf_params, name) -> None:
 
         self._beta  = kf_params["beta"]
         self._H     = kf_params["H"]
@@ -22,13 +22,16 @@ class ML(object):
         self._params = np.array(self._params)
         self._num_it = 0
         self.aux = Aux()
+        self._name = name
+        if "new" in self._name: self._columns = ["USIPMANG", "USGPYD", "USPPM", "USWRKW"]
+        else: self._columns = ["IP", "GMYX", "LPMH", "LPMHU"]
 
     def optimisation(self) -> None:
         bounds = self.bounds
         mle = minimize(self.L, self.params, method='BFGS', hess=True)
         se = list(np.sqrt(np.diag(mle.hess_inv)))
         se = self.dict_se(se)
-        self.aux.save_se(se)
+        self.aux.save_se(se, self._name)
 
     def kalman_filter(self, params) -> tuple:
         # params
@@ -69,7 +72,7 @@ class ML(object):
         self._num_it +=1
 
         C_vals, P_C_vals, nu, F = self.kalman_filter(params)
-        self.aux.save_C(C_vals, P_C_vals, self._Y.index)
+        self.aux.save_C(C=C_vals, P_C=P_C_vals, idx=self._Y.index, name=self._name)
         T = len(nu)
         L = 0
         for t in range(T):
@@ -84,7 +87,7 @@ class ML(object):
         L *= 1/2
         print(str(self._num_it) + ":", L)
         d_params = self.dict_params(params=params)
-        self.aux.save_params(params=d_params, L=L)
+        self.aux.save_params(params=d_params, L=L, name=self._name, name_cols=self._columns)
         return L
 
     def save_se(self, mle):
@@ -93,7 +96,7 @@ class ML(object):
         params = params.keys()
         se = dict(zip(params,se))
         se = pd.DataFrame(se, index=[0])
-        se.to_csv(self.aux.results_path + "/se.csv")
+        se.to_csv(self.aux.results_path + self._name + "se.csv")
 
     def dict_params(self, params) -> dict:
         beta, H, phi1, phi2, gamma1, gamma2, gamma3, gamma4, d11, d12, d13, d14, d21, d22, d23, d24, sigma1, sigma2, sigma3, sigma4 = params

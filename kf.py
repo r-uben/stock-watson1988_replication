@@ -49,7 +49,7 @@ class KF(object):
         # Initial Values:
         if alpha is None:
             self._alpha = np.zeros((self.p+self.n*self.k+1,1))
-            self._P     = 0.2*np.eye(self.p+self.n*self.k+1)
+            self._P     = np.ones((self.p+self.n*self.k+1, self.p+self.n*self.k+1))
         else:
             self._alpha = alpha
             self._P = P

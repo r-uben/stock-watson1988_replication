@@ -1,6 +1,10 @@
-	Following \citeA{stock1988probability, stock&watson1989indexes}, we take data on Industrial Production (IP), total personal income less transfer payments (GMYXP), total manufacturing and trade sales (MT82), and employee-hours in non-agricultural
-	tablishment (LPMHU). Note that in their first paper \citeyear{stock1988probability} they use employes on non agricultural payrols.  The reason of this change is to following Moore's (1988) recommendation. Because of over time and part-timework, employee-hours measures more directly fluctuations in labour input than does the number of employees. Hence, our results are goning to be different from those of \citeA{stock1988probability} for that reason. Data has been downloaded in Stock's \href{https://www.princeton.edu/~mwatson/publi.html}{webpage}.  %Note that my data is different from those used by \citeA{stock&watson1989indexes}. I am taking data from 2014-12-15 to 2022-08-31.
-
+	Following \citeA{stock1988probability, stock&watson1989indexes}, we take data on Industrial Production (IP), total personal income less transfer payments (GMYXP), total manufacturing and trade sales (MT82), and employee-hours in non-agricultural establishments (LPMHU). Note that in their first paper \citeyear{stock1988probability} they use employes on non agricultural payrols.  The reason of this change is to following Moore's (1988) recommendation. Because of over time and part-timework, employee-hours measures more directly fluctuations in labour input than does the number of employees. Hence, our results are goning to be different from those of \citeA{stock1988probability} for that reason. Data has been downloaded from Stock's \href{https://www.princeton.edu/~mwatson/publi.html}{webpage}.  %Note that my data is different from those used by \citeA{stock&watson1989indexes}. I am taking data from 2014-12-15 to 2022-08-31.
+\begin{figure}[h!]
+	\centering
+	\captionsetup{width=0.5\textwidth, font=small}
+	\caption{$C_{t|t}$ together with a 5\% confidence interval (assuming gaussianity).}\label{fig:cei}
+	\includegraphics[scale=0.5]{fig/sw_CEI}
+\end{figure}
 % employees on non agricultural payrolls.
 	\subsection{Preliminary analysis}
 	
@@ -25,18 +29,12 @@
 
 \subsection{Maximum Likelihood Estimation}
 
-The parameters of the single-index model have been estimated using IP, DPI, TS and AW over the periods 1959:2-1983:12. As in \citeA{stock&watson1989indexes}, a second order autoregressive  specification  has been adopted for $\Delta C_t$, so that $p=2$. Also, errors $u_t$ are modelled as an $AR(2)$, i.e., $k=2$. I have followed \citeA{stock1988probability} and considered $\gamma$ to be constant, i.e., $\gamma = \gamma_0\in\R^4$. The loglikelihood for this model is 274.819. The maximum likelihood estimates of the parameters of the single-index model are presented in Tables  he maximum likelihood estimates of the parameters of the single-index model are presented in Table \ref{tab:ml-params1}. I have follow \citeA{gupta1974computational} for maximising the log likelihood.The basic idea is that the negative log likelihood is minimised by the Newton-Raphson Method, iterating the process until the log likelihood stabilises. Standard errors are computed as the square root of the diagonal of the (approximated) Hessian matrix of $\mathcal{L}$.
+The parameters of the single-index model have been estimated using IP, DPI, TS and AW over the periods 1959:2-1983:12. As in \citeA{stock&watson1989indexes}, a second order autoregressive  specification  has been adopted for $\Delta C_t$, so that $p=2$. Also, errors $u_t$ are modelled as an $AR(2)$, i.e., $k=2$. I have followed \citeA{stock1988probability} and considered $\gamma$ to be constant, i.e., $\gamma = \gamma_0\in\R^4$. The loglikelihood for this model is 424.529. The maximum likelihood estimates of the parameters of the single-index model are presented in Tables  he maximum likelihood estimates of the parameters of the single-index model are presented in Table \ref{tab:sw-ml-params}. I have follow \citeA{gupta1974computational} for maximising the log likelihood.The basic idea is that the negative log likelihood is minimised by the Newton-Raphson Method, iterating the process until the log likelihood stabilises. Standard errors are computed as the square root of the diagonal of the (approximated) Hessian matrix of $\mathcal{L}$.
 
-\input{tab/params}
-The CEI, $C_{t|t}$,  is is plotted in Figure \ref{fig:cei}. Notice that  $C_{t|t} = [Z_c \ 0 \ 1] \hat{\alpha}_{t|t}$. I have also included a 5\% confidence interval band measured by $C_{t|t}\pm 1.96 \sqrt{\hat{P}_{t|t}}$, where $\hat{P}_{t|t} = [Z_c \ 0 \ 1] \hat{\alpha}_{t|t}[Z_c \ 0 \ 1]^{\text{\tiny T}}$. 
+\input{tab/sw_params}
+The CEI, $C_{t|t}$,  is is plotted in Figure \ref{fig:cei}. Notice that  $$C_{t|t} = [Z_c \ 0 \ 1] \hat{\alpha}_{t|t}.$$ I have also included a 5\% confidence interval band measured by $$C_{t|t}\pm 1.96 \sqrt{\hat{P}_{t|t}},$$ where $$\hat{P}_{t|t} = [Z_c \ 0 \ 1] \hat{\alpha}_{t|t}[Z_c \ 0 \ 1]^{\text{\tiny T}}$$
 
 
-\begin{figure}[h!]
-	\centering
-	\captionsetup{width=0.5\textwidth, font=small}
-	\caption{$C_{t|t}$ together with a 5\% confidence interval (assuming gaussianity).}\label{fig:cei}
-	\includegraphics[scale=0.6]{fig/CEI}
-\end{figure}
 %	\begin{table}[h!]
 %		\centering\small
 %			\captionsetup{width=0.6\textwidth, font=small}

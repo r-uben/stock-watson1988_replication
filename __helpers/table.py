@@ -25,7 +25,7 @@ class Table(object):
             self.caption_setup(f)
             self.new_line(f)
             self.caption(f, L)
-            self.label(f, "tab:ml-params1")
+            self.label(f, "tab:" + self._name.replace("_","-") + "ml-params")
             self.new_line(f)
             self.begin_tabular(f,n)
             self.new_line(f)
@@ -107,7 +107,7 @@ class Table(object):
         f.write("}")
     
     def caption_setup(self, f) -> None:
-        f.write("\captionsetup{width=0.6\\textwidth, font=small}")
+        f.write("\captionsetup{width=0.8\\textwidth, font=small}")
 
     def label(self, f, lab):
         f.write("\\label{" + lab + "}")
@@ -129,7 +129,7 @@ class Table(object):
 
     @property
     def my_file(self) -> str:
-        return self.tab_path + self._name
+        return self.tab_path + self._name + "params"
 
     @property
     def tex_file(self) -> str:
@@ -141,15 +141,15 @@ class Table(object):
 
     @property
     def file_ts_vars_params(self) -> str:
-        return self.results_path + "ts_vars.csv"
+        return self.results_path + self._name + "ts_vars.csv"
 
     @property
     def file_se(self) -> str:
-        return self.results_path + "se.csv"
+        return self.results_path + self._name + "se.csv"
 
     @property
     def file_L(self) -> str:
-        return self.results_path + "L.csv"
+        return self.results_path + self._name + "L.csv"
 
     @property 
     def results_path(self) -> str:

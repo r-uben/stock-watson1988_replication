@@ -1,0 +1,39 @@
+
+I want to find the Coincident Economic Index with more recent data. Then, I take US data from Refinitiv on Industrial Production (USIPMANG), total disposable personal incomes (USGPYD), total machinery manufacturing (USPPM), and weekley average work hous in nonfarm payrolls (USWRKW).  I am taking data from 2007:01-2012:12.
+
+
+\begin{figure}[h!]
+	\centering
+	\captionsetup{width=0.5\textwidth, font=small}
+	\caption{$C_{t|t}$ together with a 5\% confidence interval (assuming gaussianity) using data from 2007:01 to 2022:12.}\label{fig:new_cei}
+	\includegraphics[scale=0.5]{fig/newdata_CEI}
+\end{figure}
+
+% employees on non agricultural payrolls.
+\subsection{Preliminary analysis}
+
+I repeat the same analysis: I check whether the series are integrated and, if they are, whether they are cointegrated.  For each of the the coincident indicators, \citeA{dickey1979distribution} test for a unit root (against the alternative that the series are stationary, perhaps around a linear time trend) was unable to reject (at the 10\% level) the hypothesis that the series are integrated. P-values are reported in Table \ref{tab:new_df_pvalues}.
+
+\begin{table}[h!]
+	\centering\small
+	\captionsetup{width=0.6\textwidth, font=small}
+	\caption{P-values of the test \protect\citeA{dickey1979distribution} for a unit root applied to the four series used in the index estimation. We fail to reject in every case at thte 10\%.}\label{tab:new_df_pvalues}
+	\vspace{0cm}
+	\input{tab/newdata_pvalues_adf}
+\end{table}
+
+The subsequent aplication of the \citeA{engle1987co} test of the null hypothesis that the four series are not cointegrated against the alternative of cointegration failed to reject at the 10\% significance level. Thus these tests provided no evidence against the hypothesis that each series is integrated but they are not cointegrated. I therefore estimated the model using for the first diference of the logarithm of each of the coincident series, standardized to have zero mean and unit variance.
+
+\begin{table}[h!]
+	\centering\small
+	\captionsetup{width=0.6\textwidth, font=small}
+	\caption{P-values of the \protect\cite{engle1987co} for cointegration to the four series used in the index estimation. We fail to reject in every case at the 10\% level.}
+	\input{tab/newdata_pvalues_engle&granger}
+\end{table}
+
+\subsection{Maximum Likelihood Estimation}
+
+The parameters of the single-index model have been estimated using USIPMANG, USGPYD, USPPM, USWRKW over the periods 2007:01-2022:12. I repeat the second order autoregressive  specification  has been adopted for $\Delta C_t$, so that $p=2$. Also, errors $u_t$ are modelled as an $AR(2)$, i.e., $k=2$; and $\gamma$ is assumed to be constant, i.e., $\gamma = \gamma_0\in\R^4$. The loglikelihood for this model is 233.490. The maximum likelihood estimates of the parameters of the single-index model are presented in Tables  he maximum likelihood estimates of the parameters of the single-index model are presented in Table \ref{tab:newdata-ml-params}. I have follow \citeA{gupta1974computational} for maximising the log likelihood.The basic idea is that the negative log likelihood is minimised by the Newton-Raphson Method, iterating the process until the log likelihood stabilises. Standard errors are computed as the square root of the diagonal of the (approximated) Hessian matrix of $\mathcal{L}$.
+
+\input{tab/newdata_params}
+
