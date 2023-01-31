@@ -33,7 +33,7 @@ The subsequent aplication of the \citeA{engle1987co} test of the null hypothesis
 
 \subsection{Maximum Likelihood Estimation}
 
-The parameters of the single-index model have been estimated using USIPMANG, USGPYD, USPPM, USWRKW over the periods 2007:01-2022:12. I repeat the second order autoregressive  specification  has been adopted for $\Delta C_t$, so that $p=2$. Also, errors $u_t$ are modelled as an $AR(2)$, i.e., $k=2$; and $\gamma$ is assumed to be constant, i.e., $\gamma = \gamma_0\in\R^4$. The loglikelihood for this model is 233.490. The maximum likelihood estimates of the parameters of the single-index model are presented in Tables  he maximum likelihood estimates of the parameters of the single-index model are presented in Table \ref{tab:newdata-ml-params}. I have follow \citeA{gupta1974computational} for maximising the log likelihood.The basic idea is that the negative log likelihood is minimised by the Newton-Raphson Method, iterating the process until the log likelihood stabilises. Standard errors are computed as the square root of the diagonal of the (approximated) Hessian matrix of $\mathcal{L}$.
+The parameters of the single-index model have been estimated using USIPMANG, USGPYD, USPPM, USWRKW over the periods 2007:01-2022:12. I repeat the second order autoregressive  specification  has been adopted for $\Delta C_t$, so that $p=2$. Also, errors $u_t$ are modelled as an $AR(2)$, i.e., $k=2$; and $\gamma$ is assumed to be constant, i.e., $\gamma = \gamma_0\in\R^4$. The loglikelihood for this model is 233.490. The maximum likelihood estimates of the parameters of the single-index model are presented in Table \ref{tab:newdata-ml-params}. The procedure is the same than before.
 
 \input{tab/newdata_params}
 

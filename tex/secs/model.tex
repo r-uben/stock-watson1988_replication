@@ -1,3 +1,13 @@
+The model for the Coincident Economic Indicators \cite{stock&watson1989indexes} is
+\begin{equation}
+	\begin{aligned}
+		\Delta Y_t& = \beta + \gamma(L) \Delta C_t + u_t \\
+		D(L) u_t &= \varepsilon_t\\
+		\phi(L) \Delta  C_t& = \delta + \eta_t,
+	\end{aligned}
+\end{equation}
+where $L$ denotes the lag operator, and $\phi(L)$, $\gamma(L)$ and $D(L)$ are respectively scalar, vector, and matrix lag polinomials. Following the spirit of \citeA{stock1988probability}, we take $\gamma(L) = \gamma\in\R^n$, where $n$ is the number of variables used in $Y_t$, and $Y_t$ is the vector of logarithms. For simplicity, and again in the spirit of \citeA{stock1988probability}, we take the degree of $\phi$ to be $p=2$ and the degree of $D(L)$ to be $k=2$. Note that the latter is a matrix of lag polinomials. For simplicity, this matrix is assumed to be diagonal, i.e., $D(L) = \text{diag}\left(d_1(L),\ldots, d_k(L)\right)$. Now, let's write our equations in the state space in order to view it as a Kalman filter.
+
 The transition equation for the state is  given by
 \begin{equation}
 	\begin{bmatrix}
@@ -59,7 +69,7 @@ and
 		\end{bmatrix}
 	\end{aligned}
 \end{equation}
-and where $I_n$ denotes the $n\times n$ identity matrix, $0_{n\times k}$ denotes a $n\times k$ matrix of zeros, and $D_i = \text{diag}(d_{1,i}, \ldots, d_{n,i}$), where $d_j(L) = 1- \sum_{i=1}^k d_{j,i} L^i$.
+and where $I_n$ denotes the $n\times n$ identity matrix, $0_{n\times k}$ denotes a $n\times k$ matrix of zeros, and $D_i = \text{diag}(d_{1,i}, \ldots, d_{n,i}$), where $d_j(L) = 1- \sum_{i=1}^k d_{j,i} L^i$. Note that we are augmenting our vector to be able to recover $C_t$ as $C_t = [Z_c \ 0 \ 1] \alpha_t$.
 
 The measurement equation is:
 \begin{equation}
@@ -96,7 +106,7 @@ with $\ones\in\R^n$ being a vector of ones. The forecast of $Y_t$ at time $t-1$ 
 	\alpha_{t|t} &= \alpha_{t|t-1} + P_{t|t-1} Z'F_t^{-1}\nu_t\\
 	P_{t|t}& = P_{t|t-1} - P_{t|t-1}Z'F_t^{-1} Z P_{t|t-1}
 \end{align}
-where $F_t = \E[\nu_t\nu_t'] = Z P_{t|t-1}Z' + H$. In this specification, and following \citeA{stock&watson1989indexes}, we take $T_t$ to be constant, i.e., $T_t = T$; and $H=0$.
+where $F_t = \E[\nu_t\nu_t'] = Z P_{t|t-1}Z' + H$. In this specification, and following \citeA{stock&watson1989indexes}, we take $T_t$ to be constant, i.e., $T_t = T$.%; and $H=0$.
 
 
 Note that $\gamma$ can be taken more generally as $\gamma(L)$, as it is dones, for instance, in \citeA{stock1988probability}. However, for the sake of simplicity now, we are just considering $\gamma(L) = \gamma$ to be just a vector in $\R^n$.
